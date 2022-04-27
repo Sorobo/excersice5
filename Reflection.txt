@@ -1,0 +1,52 @@
+
+
+    Condition variables, Java monitors, and Ada protected objects are quite similar in what they do (temporarily yield execution so some other task can unblock us).
+        But in what ways do these mechanisms differ?
+
+        -
+
+
+
+    Bugs in this kind of low-level synchronization can be hard to spot.
+        Which solutions are you most confident are correct?
+        Why, and what does this say about code quality?
+
+
+        -
+
+
+    We operated only with two priority levels here, but it makes sense for this "kind" of priority resource to support more priorities.
+        How would you extend these solutions to N priorities? Is it even possible to do this elegantly?
+
+        Part 1:
+        can be expaded by adding more semaphores in sems and increasing the size of numWaiting
+
+        Part 2:
+        Can have as many layers as you want, without adding any more size
+
+        Part 3
+
+        Part 4:
+        messagepassing using request is easily expanded as long as the queue can be sortet
+        using priorityselect you will have to include a new channel and more cases for every level of priority. the select "tree" grows with (n+1)*n/2
+
+
+        What (if anything) does that say about code quality?
+
+        if we only have two prioritylevels might priorityselect be preferable since the implemenataion is easy, but if expansion is a possibility, would it be smart to use something that is expandable
+
+
+
+
+    In D's standard library, getValue for semaphores is not even exposed (probably because it is not portable - Windows semaphores don't have getValue, though you could hack it together with ReleaseSemaphore() and WaitForSingleObject()).
+        A leading question: Is using getValue ever appropriate?
+
+        probably not. I would want my code to run on as many platforms as possible
+
+        Explain your intuition: What is it that makes getValue so dubious?
+
+        -
+
+    Which one(s) of these different mechanisms do you prefer, both for this specific task, and in general? (This is a matter of taste - there are no "right" answers here)
+
+    -

@@ -47,15 +47,25 @@ func resourceManager(askFor chan ResourceRequest, giveBack chan Resource){
 
     res     := Resource{}
     //busy    := false
-    //queue   := PriorityQueue{}
-
+    queue   := PriorityQueue{}
+    busy := false
     for {
         select {
         case request := <-askFor:
+            queue.Insert(request,request.priority)
             //fmt.Printf("[resource manager]: received request: %+v\n", request)
-            request.channel <- res
+
         case res = <-giveBack:
+            queue.PopFront()
+            busy = false
+            
             //fmt.Printf("[resource manager]: resource returned\n")
+        default:
+            if !busy && !queue.Empty(){
+                request := queue.Front().(ResourceRequest)
+                request.channel <- res
+                busy = true
+            }
         }
     }
 }
